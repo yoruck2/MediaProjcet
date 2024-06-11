@@ -31,7 +31,7 @@ class SerachMovieCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         
         super.init(frame: frame)
-        addSubview(moviePosterImageView)
+        contentView.addSubview(moviePosterImageView)
 //        setUpData()
         clipsToBounds = true
         configurationLayout()
@@ -55,7 +55,6 @@ class SerachMovieCollectionViewCell: UICollectionViewCell {
             return
         }
         let url = URL(string: "https://image.tmdb.org/t/p/w500\(poster)")
-        print(url)
         moviePosterImageView.kf.setImage(with: url)
     }
     

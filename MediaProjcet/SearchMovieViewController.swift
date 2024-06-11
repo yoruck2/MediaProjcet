@@ -24,6 +24,7 @@ class SearchMovieViewController: UIViewController {
     lazy var searchedList: [ResultDTO] = []
     
     var page = 1
+    var isEnd = false
     
     let movieSearchBar = {
         let view = UISearchBar()
@@ -53,14 +54,13 @@ class SearchMovieViewController: UIViewController {
         Network.sendGetRequest(with: "dune") { data in
             
             self.searchedData = data
-//            dump(self.searchedData)
             self.movieCollectionView.reloadData()
         }
         configureHierachy()
         configureLayout()
         configureUI()
         setUpCollectionView()
-        
+        setUpSearchBar()
         
     }
     
@@ -84,12 +84,6 @@ class SearchMovieViewController: UIViewController {
     func configureUI() {
         navigationController?.navigationItem.title = "영화 검색"
     }
-    
-
-}
-
-extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
     func setUpCollectionView() {
        
         movieCollectionView.delegate = self
@@ -99,6 +93,15 @@ extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewD
 
         movieCollectionView.backgroundColor = .black
     }
+    func setUpSearchBar() {
+        movieSearchBar.delegate = self
+    }
+
+}
+
+extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.width - 40) / 3
@@ -116,10 +119,32 @@ extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewD
     }
 }
 
+extension SearchMovieViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        
+        for item in indexPaths {
+            if searchedList.count - 2 == item.row && isEnd == false {
+                page += 1
+                Network.sendGetRequest(with: movieSearchBar.text ?? "") { data in
+                    self.searchedData = data
+                }
+                
+            }
+        }
+    }
+    // 취소 기능 : 단, 직접 취소라는 기능을 구현 해줘야 한다
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        print("Cancel Prefetch \(indexPaths)")
+    }
+}
+
 extension SearchMovieViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         page = 1
-//        Network.sendGetRequest(with: searchBar.text ?? "", completion: <#(SearchedMovieDTO) -> Void#>)
+        Network.sendGetRequest(with: searchBar.text ?? "") { data in
+            self.searchedData = data
+        }
+        searchBar.resignFirstResponder()
     }
 }
