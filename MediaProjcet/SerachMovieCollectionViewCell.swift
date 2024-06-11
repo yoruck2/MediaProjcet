@@ -10,18 +10,30 @@ import Kingfisher
 import SnapKit
 
 class SerachMovieCollectionViewCell: UICollectionViewCell {
-    var cellData: ResultDTO?
+    var cellData: ResultDTO? {
+        didSet {
+            setUpData()
+        }
+    }
     
     lazy var moviePosterImageView = {
         let view = UIImageView()
-        
+        view.contentMode = .scaleAspectFill
+        view.clipsToBounds = true
         return view
     }()
     
+    override func layoutSubviews() {
+        layer.cornerRadius = 10
+        clipsToBounds = true
+    }
+    
     override init(frame: CGRect) {
+        
         super.init(frame: frame)
         addSubview(moviePosterImageView)
-        setUpData()
+//        setUpData()
+        clipsToBounds = true
         configurationLayout()
         
     }
@@ -30,15 +42,20 @@ class SerachMovieCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     func configurationLayout() {
         moviePosterImageView.snp.makeConstraints {
-            $0.edges.equalTo(contentView)
+            $0.edges.equalTo(contentView.snp.edges)
         }
     }
     
     func setUpData() {
-        let url = URL(string: cellData?.poster_path ?? "")
+        
+        guard let poster = cellData?.poster_path else {
+            print("시발")
+            return
+        }
+        let url = URL(string: "https://image.tmdb.org/t/p/w500\(poster)")
+        print(url)
         moviePosterImageView.kf.setImage(with: url)
     }
     

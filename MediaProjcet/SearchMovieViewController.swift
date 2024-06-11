@@ -18,17 +18,18 @@ class SearchMovieViewController: UIViewController {
                 return
             }
             searchedList = data
+            movieCollectionView.reloadData()
         }
     }
     lazy var searchedList: [ResultDTO] = []
     
     var page = 1
     
-    
     let movieSearchBar = {
         let view = UISearchBar()
         view.placeholder = "영화 제목을 검색해보세요"
         view.backgroundColor = .black
+        
         return view
     }()
     
@@ -37,7 +38,7 @@ class SearchMovieViewController: UIViewController {
     func collectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()   // tableView.rowHeight 역할
         let width = UIScreen.main.bounds.width - 40
-        layout.itemSize = CGSize(width: width / 3, height: width / 3)
+//        layout.itemSize = CGSize(width: width / 3, height: width / 3)
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
@@ -47,16 +48,20 @@ class SearchMovieViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("😛😛")
         
+        Network.sendGetRequest(with: "dune") { data in
+            
+            self.searchedData = data
+//            dump(self.searchedData)
+            self.movieCollectionView.reloadData()
+        }
         configureHierachy()
         configureLayout()
         configureUI()
-        movieCollectionView.backgroundColor = .black
+        setUpCollectionView()
         
-        Network.sendGetRequest(with: "dune") { data in
-            self.searchedData = data
-            dump(self.searchedData)
-        }
+        
     }
     
     func configureHierachy() {
@@ -72,29 +77,32 @@ class SearchMovieViewController: UIViewController {
         
         movieCollectionView.snp.makeConstraints {
             $0.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
-            $0.top.equalTo(movieSearchBar).offset(5)
+            $0.top.equalTo(movieSearchBar.snp.bottom).offset(5)
         }
     }
     
     func configureUI() {
         navigationController?.navigationItem.title = "영화 검색"
     }
+    
+
 }
 
 extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func setUpCollectionView() {
-        guard var data = searchedData else {
-            return
-        }
+       
         movieCollectionView.delegate = self
-        movieCollectionView.dataSource = self
         movieCollectionView.dataSource = self
         movieCollectionView.register(SerachMovieCollectionViewCell.self,
                                 forCellWithReuseIdentifier: SerachMovieCollectionViewCell.id)
-        
-        view.backgroundColor = .lightGray
-        movieCollectionView.backgroundColor = .green
+
+        movieCollectionView.backgroundColor = .black
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = (collectionView.bounds.width - 40) / 3
+        return CGSize(width: width, height: width * 1.5)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -103,7 +111,6 @@ extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SerachMovieCollectionViewCell.id, for: indexPath) as! SerachMovieCollectionViewCell
-        
         cell.cellData = searchedList[indexPath.row]
         return cell
     }

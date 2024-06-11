@@ -9,8 +9,8 @@ import Foundation
 
 struct APIURL {
     static let trendingURL = "https://api.themoviedb.org/3/trending/all/day?api_key=\(APIType.TMDB_API.APIkey)"
-    static let searchMovieURL = "https://api.themoviedb.org/3/search/movie?api_key=\(APIType.TMDB_API.APIkey)"
-    static let aa = "api_key=\(APIType.TMDB_API.APIkey),&query="
+    static let searchMovieURL = "https://api.themoviedb.org/3/search/movie?api_key=\(APIKey.TMDB_Key)"
+//    static let aa = "api_key=\(APIType.TMDB_API.APIkey),&query="
 }
 
 enum APIType {
@@ -21,12 +21,18 @@ enum APIType {
         
         switch self {
         case .TMDB_API:
-            keyName = "API_KEY"
+            keyName = "TMDB_API_KEY"
         }
         guard let key = Bundle.main.object(forInfoDictionaryKey: keyName) as? String else {
-            assertionFailure("API_KEY를 찾을 수 없음")
+            print("API_KEY를 찾을 수 없음")
             return ""
         }
+        print("--mmmmm------------------------")
+        print(key)
+        print("--mmmmm------------------------")
+        print(keyName)
+        print("--mmmmm------------------------")
         return key
     }
 }
+
