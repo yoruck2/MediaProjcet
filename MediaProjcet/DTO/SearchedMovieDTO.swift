@@ -10,8 +10,6 @@ import Foundation
 struct SearchedMovieDTO: Codable {
     let page: Int
     let results: [ResultDTO]
-    
-//    let totalPages, totalResults: Int
 
     enum CodingKeys: String, CodingKey {
         case page, results
@@ -21,15 +19,20 @@ struct SearchedMovieDTO: Codable {
 }
 
 struct ResultDTO: Codable {
-    let adult: Bool
-    let backdrop_path: String?
-    let genre_ids: [Int]
-    let id: Int
-    let original_language, original_title, overview: String
-    let popularity: Double
+    
+    init(poster_path: String?){
+        self.poster_path = poster_path
+    }
+    
+//    let adult: Bool
+//    let backdrop_path: String?
+//    let genre_ids: [Int]
+//    let id: Int
+//    let original_language, original_title, overview: String
+//    let popularity: Double
     let poster_path: String?
-    let release_date, title: String
-    let video: Bool
-    let vote_average: Double
-    let vote_count: Int
+//    let release_date, title: String
+//    let video: Bool
+//    let vote_average: Double
+//    let vote_count: Int
 }
