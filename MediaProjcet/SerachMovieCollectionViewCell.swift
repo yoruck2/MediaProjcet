@@ -10,11 +10,7 @@ import Kingfisher
 import SnapKit
 
 class SerachMovieCollectionViewCell: UICollectionViewCell {
-    var cellData: ResultDTO? {
-        didSet {
-            setUpData()
-        }
-    }
+    var cellData: ResultDTO?
     
     lazy var moviePosterImageView = {
         let view = UIImageView()
@@ -31,8 +27,8 @@ class SerachMovieCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         
         super.init(frame: frame)
+        backgroundColor = .lightGray
         contentView.addSubview(moviePosterImageView)
-//        setUpData()
         clipsToBounds = true
         configurationLayout()
         
@@ -50,12 +46,13 @@ class SerachMovieCollectionViewCell: UICollectionViewCell {
     
     func setUpData() {
         
-        guard let poster = cellData?.poster_path else {
-            print("시발")
+        guard let poster = cellData?.posterPath else {
+            print("이미지 없음")
             return
         }
         let url = URL(string: "https://image.tmdb.org/t/p/w500\(poster)")
         moviePosterImageView.kf.setImage(with: url)
+        print("이미지 있음")
     }
     
     

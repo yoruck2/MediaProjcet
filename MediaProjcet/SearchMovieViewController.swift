@@ -14,22 +14,21 @@ class SearchMovieViewController: UIViewController {
     
     var searchedData: SearchedMovieDTO? {
         didSet {
-            guard let data = searchedData?.results else {
+            guard let data = searchedData?.results, data.isEmpty == false else {
+                searchFailedLabel.isHidden = false
                 return
             }
-            searchedList = data
-            movieCollectionView.reloadData()
+            movieList = data
         }
     }
-    lazy var searchedList: [ResultDTO] = []
+    
+    lazy var movieList: [ResultDTO] = []
     
     var page = 1
-    var isEnd = false
     
     let movieSearchBar = {
         let view = UISearchBar()
         view.placeholder = "영화 제목을 검색해보세요"
-        view.backgroundColor = .black
         
         return view
     }()
@@ -38,36 +37,41 @@ class SearchMovieViewController: UIViewController {
     
     func collectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()   // tableView.rowHeight 역할
-        let width = UIScreen.main.bounds.width - 40
-//        layout.itemSize = CGSize(width: width / 3, height: width / 3)
+        let sectionSpacing: CGFloat = 20
+        let cellSpacing: CGFloat = 16
+        
+        let width = UIScreen.main.bounds.width - (sectionSpacing * 2) - (cellSpacing * 2)
+        layout.itemSize = CGSize(width: width / 3, height: width / 3 * 1.5)
         layout.scrollDirection = .vertical
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.minimumInteritemSpacing = cellSpacing
+        layout.minimumLineSpacing = cellSpacing
+        layout.sectionInset = UIEdgeInsets(top: sectionSpacing, left: sectionSpacing, bottom: sectionSpacing, right: sectionSpacing)
         return layout
     }
     
+    lazy var searchFailedLabel = {
+        let view = UILabel()
+        view.text = "검색 결과가 없습니다"
+        view.textColor = .white
+        view.isHidden = true
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("😛😛")
         
-        Network.sendGetRequest(with: "dune") { data in
-            
-            self.searchedData = data
-            self.movieCollectionView.reloadData()
-        }
         configureHierachy()
         configureLayout()
         configureUI()
         setUpCollectionView()
         setUpSearchBar()
-        
     }
     
     func configureHierachy() {
         view.addSubview(movieSearchBar)
         view.addSubview(movieCollectionView)
         view.addSubview(movieSearchBar)
+        view.addSubview(searchFailedLabel)
     }
     
     func configureLayout() {
@@ -79,60 +83,69 @@ class SearchMovieViewController: UIViewController {
             $0.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.top.equalTo(movieSearchBar.snp.bottom).offset(5)
         }
+        
+        searchFailedLabel.snp.makeConstraints {
+            $0.top.equalTo(movieSearchBar.snp.bottom).offset(50)
+            $0.centerX.equalTo(view.safeAreaLayoutGuide)
+        }
     }
     
     func configureUI() {
-        navigationController?.navigationItem.title = "영화 검색"
+//        navigationController?.title = "영화 검색"
+//        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        navigationItem.title = "영화 검색"
+//                view.backgroundColor = .black
     }
     func setUpCollectionView() {
-       
+        
         movieCollectionView.delegate = self
         movieCollectionView.dataSource = self
+        movieCollectionView.prefetchDataSource = self
         movieCollectionView.register(SerachMovieCollectionViewCell.self,
-                                forCellWithReuseIdentifier: SerachMovieCollectionViewCell.id)
-
-        movieCollectionView.backgroundColor = .black
+                                     forCellWithReuseIdentifier: SerachMovieCollectionViewCell.id)
+        
+        movieCollectionView.backgroundColor = .clear
     }
     func setUpSearchBar() {
         movieSearchBar.delegate = self
     }
-
+    
 }
 
-extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (collectionView.bounds.width - 40) / 3
-        return CGSize(width: width, height: width * 1.5)
-    }
+extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return searchedList.count
+        return movieList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SerachMovieCollectionViewCell.id, for: indexPath) as! SerachMovieCollectionViewCell
-        cell.cellData = searchedList[indexPath.row]
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SerachMovieCollectionViewCell.id, for: indexPath) as? SerachMovieCollectionViewCell
+        else {
+            return UICollectionViewCell()
+        }
+        if movieList.isEmpty {
+            return cell
+        }
+        
+        cell.cellData = movieList[indexPath.row]
+        cell.setUpData()
         return cell
     }
 }
 
-extension SearchMovieViewController: UITableViewDataSourcePrefetching {
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        
-        for item in indexPaths {
-            if searchedList.count - 2 == item.row && isEnd == false {
+extension SearchMovieViewController: UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for indexPaths in indexPaths {
+            if movieList.count - 2 == indexPaths.item {
                 page += 1
-                Network.sendGetRequest(with: movieSearchBar.text ?? "") { data in
-                    self.searchedData = data
+                Network.sendGetRequest(page: page, with: movieSearchBar.text ?? "") { data in
+                    self.movieList.append(contentsOf: data.results)
+                    self.movieCollectionView.reloadData()
                 }
-                
             }
         }
     }
-    // 취소 기능 : 단, 직접 취소라는 기능을 구현 해줘야 한다
+    
     func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
         print("Cancel Prefetch \(indexPaths)")
     }
@@ -142,9 +155,19 @@ extension SearchMovieViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         page = 1
-        Network.sendGetRequest(with: searchBar.text ?? "") { data in
-            self.searchedData = data
+        movieList.removeAll()
+        
+        guard let text = searchBar.text else {
+            return
         }
-        searchBar.resignFirstResponder()
+        Network.sendGetRequest(page: page, with: text) { [self] data in
+            searchedData = data
+            movieCollectionView.reloadData()
+            if movieList.isEmpty == false {
+                searchFailedLabel.isHidden = true
+                movieCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            }
+            searchBar.resignFirstResponder()
+        }
     }
 }

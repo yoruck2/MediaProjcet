@@ -10,8 +10,8 @@ import Alamofire
 
 struct Network {
     
-    static func sendGetRequest(with string: String, completion: @escaping (SearchedMovieDTO) -> Void) {
-        AF.request("\(APIURL.searchMovieURL)&query=\(string)")
+    static func sendGetRequest(page: Int, with string: String, completion: @escaping (SearchedMovieDTO) -> Void) {
+        AF.request("\(APIURL.searchMovieURL)&query=\(string)&page=\(page)")
             .validate(statusCode: 200..<300)
             .responseDecodable(of: SearchedMovieDTO.self) { response in
                 switch response.result {
