@@ -23,6 +23,8 @@
 		8496E7872C18709500F87AF8 /* SerachMovieCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496E7862C18709500F87AF8 /* SerachMovieCollectionViewCell.swift */; };
 		8496E78B2C1871D900F87AF8 /* UIView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496E78A2C1871D900F87AF8 /* UIView+.swift */; };
 		8496E78D2C18975100F87AF8 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496E78C2C18975100F87AF8 /* APIKey.swift */; };
+		8496E79E2C19ECC300F87AF8 /* TrendingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496E79D2C19ECC300F87AF8 /* TrendingViewController.swift */; };
+		8496E7A02C19ECFA00F87AF8 /* TrendingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496E79F2C19ECFA00F87AF8 /* TrendingCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +44,8 @@
 		8496E7862C18709500F87AF8 /* SerachMovieCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerachMovieCollectionViewCell.swift; sourceTree = "<group>"; };
 		8496E78A2C1871D900F87AF8 /* UIView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+.swift"; sourceTree = "<group>"; };
 		8496E78C2C18975100F87AF8 /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
+		8496E79D2C19ECC300F87AF8 /* TrendingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingViewController.swift; sourceTree = "<group>"; };
+		8496E79F2C19ECFA00F87AF8 /* TrendingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,11 +81,10 @@
 		8496E7532C17BC0900F87AF8 /* MediaProjcet */ = {
 			isa = PBXGroup;
 			children = (
+				8496E79A2C19EAEE00F87AF8 /* App */,
 				8496E78A2C1871D900F87AF8 /* UIView+.swift */,
-				8496E7542C17BC0900F87AF8 /* AppDelegate.swift */,
-				8496E7562C17BC0900F87AF8 /* SceneDelegate.swift */,
-				8496E7582C17BC0900F87AF8 /* SearchMovieViewController.swift */,
-				8496E7862C18709500F87AF8 /* SerachMovieCollectionViewCell.swift */,
+				8496E79B2C19EB4E00F87AF8 /* SearchMovie */,
+				8496E79C2C19ECAA00F87AF8 /* Trending */,
 				8496E7802C1868B200F87AF8 /* Network */,
 				8496E77F2C1868A600F87AF8 /* DTO */,
 				8496E75D2C17BC0A00F87AF8 /* Assets.xcassets */,
@@ -110,6 +113,33 @@
 				8496E78C2C18975100F87AF8 /* APIKey.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		8496E79A2C19EAEE00F87AF8 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				8496E7542C17BC0900F87AF8 /* AppDelegate.swift */,
+				8496E7562C17BC0900F87AF8 /* SceneDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		8496E79B2C19EB4E00F87AF8 /* SearchMovie */ = {
+			isa = PBXGroup;
+			children = (
+				8496E7582C17BC0900F87AF8 /* SearchMovieViewController.swift */,
+				8496E7862C18709500F87AF8 /* SerachMovieCollectionViewCell.swift */,
+			);
+			path = SearchMovie;
+			sourceTree = "<group>";
+		};
+		8496E79C2C19ECAA00F87AF8 /* Trending */ = {
+			isa = PBXGroup;
+			children = (
+				8496E79D2C19ECC300F87AF8 /* TrendingViewController.swift */,
+				8496E79F2C19ECFA00F87AF8 /* TrendingCollectionViewCell.swift */,
+			);
+			path = Trending;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -195,6 +225,8 @@
 			files = (
 				8496E7592C17BC0900F87AF8 /* SearchMovieViewController.swift in Sources */,
 				8496E7552C17BC0900F87AF8 /* AppDelegate.swift in Sources */,
+				8496E7A02C19ECFA00F87AF8 /* TrendingCollectionViewCell.swift in Sources */,
+				8496E79E2C19ECC300F87AF8 /* TrendingViewController.swift in Sources */,
 				8496E7822C1868DD00F87AF8 /* SearchedMovieDTO.swift in Sources */,
 				8496E7872C18709500F87AF8 /* SerachMovieCollectionViewCell.swift in Sources */,
 				8496E78D2C18975100F87AF8 /* APIKey.swift in Sources */,

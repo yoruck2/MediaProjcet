@@ -9,13 +9,12 @@ import UIKit
 import Kingfisher
 import SnapKit
 
-class SerachMovieCollectionViewCell: UICollectionViewCell {
+final class SerachMovieCollectionViewCell: UICollectionViewCell {
     var cellData: ResultDTO?
     
     lazy var moviePosterImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
-        view.clipsToBounds = true
         return view
     }()
     
@@ -29,7 +28,6 @@ class SerachMovieCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         backgroundColor = .lightGray
         contentView.addSubview(moviePosterImageView)
-        clipsToBounds = true
         configurationLayout()
         
     }
@@ -38,7 +36,7 @@ class SerachMovieCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configurationLayout() {
+    private func configurationLayout() {
         moviePosterImageView.snp.makeConstraints {
             $0.edges.equalTo(contentView.snp.edges)
         }

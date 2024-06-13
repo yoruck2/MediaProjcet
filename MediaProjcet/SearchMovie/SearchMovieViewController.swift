@@ -10,6 +10,7 @@ import UIKit
 import SnapKit
 import Kingfisher
 
+
 class SearchMovieViewController: UIViewController {
     
     var searchedData: SearchedMovieDTO? {
@@ -29,7 +30,6 @@ class SearchMovieViewController: UIViewController {
     let movieSearchBar = {
         let view = UISearchBar()
         view.placeholder = "영화 제목을 검색해보세요"
-        
         return view
     }()
     
@@ -68,10 +68,10 @@ class SearchMovieViewController: UIViewController {
     }
     
     func configureHierachy() {
-        view.addSubview(movieSearchBar)
-        view.addSubview(movieCollectionView)
-        view.addSubview(movieSearchBar)
-        view.addSubview(searchFailedLabel)
+        view.addSubviews(movieSearchBar,
+                         movieCollectionView,
+                         movieSearchBar,
+                         searchFailedLabel)
     }
     
     func configureLayout() {
@@ -91,11 +91,9 @@ class SearchMovieViewController: UIViewController {
     }
     
     func configureUI() {
-//        navigationController?.title = "영화 검색"
-//        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         navigationItem.title = "영화 검색"
-//                view.backgroundColor = .black
     }
+    
     func setUpCollectionView() {
         
         movieCollectionView.delegate = self
@@ -103,13 +101,10 @@ class SearchMovieViewController: UIViewController {
         movieCollectionView.prefetchDataSource = self
         movieCollectionView.register(SerachMovieCollectionViewCell.self,
                                      forCellWithReuseIdentifier: SerachMovieCollectionViewCell.id)
-        
-        movieCollectionView.backgroundColor = .clear
     }
     func setUpSearchBar() {
         movieSearchBar.delegate = self
     }
-    
 }
 
 extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -133,10 +128,19 @@ extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewD
     }
 }
 
+// TODO: issue: 검색 후 첫 스크롤 시 아주 빠르게 하면 영화가 로드되지 않는 경우가 있다
+// index를 확인해보니 증가하다가 갑자기 한자리수로 줄어드는것을 확인, movieList.count 에 도달하지 못하는것이 원인
+// why ??
 extension SearchMovieViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for indexPaths in indexPaths {
-            if movieList.count - 2 == indexPaths.item {
+            print(indexPaths)
+            print(indexPaths.section)
+            print(indexPaths.row)
+            print(indexPaths.item)
+            print("=-=-=-=-=-=-=-=-=-=-")
+            print(movieList.count)
+            if movieList.count - 4 <= indexPaths.item {
                 page += 1
                 Network.sendGetRequest(page: page, with: movieSearchBar.text ?? "") { data in
                     self.movieList.append(contentsOf: data.results)
