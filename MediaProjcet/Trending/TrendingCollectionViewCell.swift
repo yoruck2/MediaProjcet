@@ -14,7 +14,6 @@ class TrendingCollectionViewCell: UICollectionViewCell {
     lazy var dateLabel = {
         let view = UILabel()
         
-        
         return view
     }()
     

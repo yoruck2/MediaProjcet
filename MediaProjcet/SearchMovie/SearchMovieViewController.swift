@@ -47,7 +47,10 @@ class SearchMovieViewController: UIViewController {
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = cellSpacing
         layout.minimumLineSpacing = cellSpacing
-        layout.sectionInset = UIEdgeInsets(top: sectionSpacing, left: sectionSpacing, bottom: sectionSpacing, right: sectionSpacing)
+        layout.sectionInset = UIEdgeInsets(top: sectionSpacing, 
+                                           left: sectionSpacing,
+                                           bottom: sectionSpacing,
+                                           right: sectionSpacing)
         return layout
     }
     
@@ -129,7 +132,6 @@ extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewD
         cell.setUpData()
         return cell
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
