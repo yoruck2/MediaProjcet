@@ -13,6 +13,8 @@ import Kingfisher
 
 class SearchMovieViewController: UIViewController {
     
+    let network = NetworkManager.shared
+    
     var searchedData: SearchedMovieDTO? {
         didSet {
             guard let data = searchedData?.results, data.isEmpty == false else {
@@ -23,7 +25,7 @@ class SearchMovieViewController: UIViewController {
         }
     }
     
-    lazy var movieList: [ResultDTO] = []
+    lazy var movieList: [SearchResultDTO] = []
     
     var page = 1
     
@@ -104,6 +106,7 @@ class SearchMovieViewController: UIViewController {
     }
     func setUpSearchBar() {
         movieSearchBar.delegate = self
+        
     }
 }
 
@@ -126,6 +129,14 @@ extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewD
         cell.setUpData()
         return cell
     }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        var vc = MovieDetailViewController()
+        vc.movieData = movieList[indexPath.item]
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 // TODO: issue: 검색 후 첫 스크롤 시 아주 빠르게 하면 영화가 로드되지 않는 경우가 있다
@@ -134,15 +145,17 @@ extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewD
 extension SearchMovieViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for indexPaths in indexPaths {
+            
             print(indexPaths)
             print(indexPaths.section)
             print(indexPaths.row)
             print(indexPaths.item)
             print("=-=-=-=-=-=-=-=-=-=-")
             print(movieList.count)
-            if movieList.count - 4 <= indexPaths.item {
+            
+            if movieList.count - 1 == indexPaths.item {
                 page += 1
-                Network.sendGetRequest(page: page, with: movieSearchBar.text ?? "") { data in
+                network.requestSearch(page: page, with: movieSearchBar.text ?? "") { data in
                     self.movieList.append(contentsOf: data.results)
                     self.movieCollectionView.reloadData()
                 }
@@ -150,9 +163,10 @@ extension SearchMovieViewController: UICollectionViewDataSourcePrefetching {
         }
     }
     
-    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
-        print("Cancel Prefetch \(indexPaths)")
-    }
+    
+}
+private func collectionView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+    print("Cancel Prefetch \(indexPaths)")
 }
 
 extension SearchMovieViewController: UISearchBarDelegate {
@@ -164,7 +178,7 @@ extension SearchMovieViewController: UISearchBarDelegate {
         guard let text = searchBar.text else {
             return
         }
-        Network.sendGetRequest(page: page, with: text) { [self] data in
+        network.requestSearch(page: page, with: text) { [self] data in
             searchedData = data
             movieCollectionView.reloadData()
             if movieList.isEmpty == false {

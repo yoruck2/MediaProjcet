@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        let main = UINavigationController(rootViewController: TrendingViewController())
+        let main = UINavigationController(rootViewController: SearchMovieViewController())
         
         
         window = UIWindow(windowScene: scene)

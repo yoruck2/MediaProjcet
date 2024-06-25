@@ -36,8 +36,8 @@ class TrendingViewController: UIViewController {
         configureLayout()
         configureUI()
         
-        trendingCollectionView.delegate = self
-        trendingCollectionView.dataSource = self
+//        trendingCollectionView.delegate = self
+//        trendingCollectionView.dataSource = self
         trendingCollectionView.register(TrendingCollectionViewCell.self, forCellWithReuseIdentifier: TrendingCollectionViewCell.id)
     }
     
@@ -81,18 +81,18 @@ class TrendingViewController: UIViewController {
     }
 }
 
-extension TrendingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        trendingData?.results.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrendingCollectionViewCell.id, for: indexPath) as? TrendingCollectionViewCell
-        else {
-            return UICollectionViewCell()
-        }
-
-        return cell
-    }
-}
+//extension TrendingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+//    
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        trendingData?.results.count
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrendingCollectionViewCell.id, for: indexPath) as? TrendingCollectionViewCell
+//        else {
+//            return UICollectionViewCell()
+//        }
+//
+//        return cell
+//    }
+//}

@@ -10,7 +10,7 @@ import Kingfisher
 import SnapKit
 
 final class SerachMovieCollectionViewCell: UICollectionViewCell {
-    var cellData: ResultDTO?
+    var cellData: SearchResultDTO?
     
     lazy var moviePosterImageView = {
         let view = UIImageView()

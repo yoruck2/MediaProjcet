@@ -9,17 +9,18 @@ import Foundation
 
 struct TrendingDTO: Codable {
     let page: Int
-    let results: [Result]
+    let results: [TrendingResultDTO]
     let totalPages, totalResults: Int
 
     enum CodingKeys: String, CodingKey {
         case page, results
+//        case voteAverage
         case totalPages = "total_pages"
         case totalResults = "total_results"
     }
 }
 
-struct Result: Codable {
+struct TrendingResultDTO: Codable {
     let backdropPath: String
     let id: Int
     let overview: String
@@ -27,11 +28,11 @@ struct Result: Codable {
     let title: String
     let genreIDS: [Int]
     let releaseDate: String
+//    let voteAverage: Double
     //    let originalLanguage: OriginalLanguage
     //    let popularity: Double
     //    let adult: Bool
     //    let video: Bool
-    //    let voteAverage: Double
     //    let voteCount: Int
     
     enum CodingKeys: String, CodingKey {
