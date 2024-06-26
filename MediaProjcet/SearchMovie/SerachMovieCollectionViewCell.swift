@@ -10,7 +10,7 @@ import Kingfisher
 import SnapKit
 
 final class SerachMovieCollectionViewCell: UICollectionViewCell {
-    var cellData: SearchResultDTO?
+    var cellData: SearchedMovie.Result?
     
     lazy var moviePosterImageView = {
         let view = UIImageView()
@@ -45,12 +45,10 @@ final class SerachMovieCollectionViewCell: UICollectionViewCell {
     func setUpData() {
         
         guard let poster = cellData?.posterPath else {
-            print("이미지 없음")
             return
         }
         let url = URL(string: "https://image.tmdb.org/t/p/w500\(poster)")
         moviePosterImageView.kf.setImage(with: url)
-        print("이미지 있음")
     }
     
     

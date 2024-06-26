@@ -9,7 +9,7 @@ import UIKit
 
 class TrendingCollectionViewCell: UICollectionViewCell {
     
-    var cellData: TrendingDTO?
+    var cellData: Trending?
     
     lazy var dateLabel = {
         let view = UILabel()

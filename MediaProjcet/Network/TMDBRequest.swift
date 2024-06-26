@@ -6,52 +6,65 @@
 //
 
 import Foundation
+import Alamofire
 
-enum TMDBAPI {
-    case movies
-    case search
-    case trending
+enum TMDBRequest {
+    case trending(type: TrendingType, language: Language)
+    case searchMovie(query: String)
+    case movieSuggestion(type: SuggestionType, movieId: Int)
+    case movieImage(movieId: Int)
     
-    var category: String {
+    enum TrendingType: String {
+        case TV = "tv"
+        case Movie = "movie"
+    }
+    enum SuggestionType: String {
+        case silmilarMovie = "similar"
+        case recommandationMovie = "recommendations"
+    }
+    enum Language: String {
+        case korean = "ko-KR"
+        case english = "en-US" // default
+    }
+    
+    // MARK: URL components -
+    private var baseURL: String {
+        return "https://api.themoviedb.org/3/"
+    }
+    
+    var header: HTTPHeaders {
+        return ["Authorization": APIAuth.accessToken.header]
+    }
+    
+    var endPoint: URL {
         switch self {
-        case .movies:
-            return "movie"
-        case .search:
-            return "search"
-        case .trending:
-            return "trending"
+        case .trending(let type, _):
+            return URL.make(with: baseURL + "trending/\(type.rawValue)/day")
+        case .searchMovie:
+            return URL.make(with: baseURL + "search/movie")
+        case .movieSuggestion(let type, let id):
+            return URL.make(with: baseURL + "movie/\(id)/\(type.rawValue)")
+        case .movieImage(let id):
+            return URL.make(with: baseURL + "movie/\(id)/images")
         }
     }
     
-    enum Movies: String {
-        case recommendation
-        case similar
+    var method: HTTPMethod {
+        return .get
     }
-}
-
-struct TMDBRequest {
-    static let trendingURL = "https://api.themoviedb.org/3/trending/all/day?api_key=\(APIType.TMDB_API.APIkey)"
-    static let searchMovieURL = "https://api.themoviedb.org/3/search/movie?api_key=\(APIType.TMDB_API.APIkey)"
-    static let baseURL = "https://api.themoviedb.org/3"
-}
-
-
-// TODO: configuration의 key를 찾지 못하는 이유..?
-enum APIType {
-    case TMDB_API
-
-    var APIkey: String {
-        let keyName: String
-        
+    
+    var parameter: Parameters {
         switch self {
-        case .TMDB_API:
-            keyName = "TMDB_API_KEY"
+        case .trending(_, let language):
+            return ["language": language.rawValue]
+        case .searchMovie(let query):
+            return ["query": query]
+        case .movieSuggestion(_, _):
+            return ["page": 1]
+        case .movieImage:
+            return ["include_image_language": ""]
         }
-        guard let key = Bundle.main.object(forInfoDictionaryKey: keyName) as? String else {
-            print("API_KEY를 찾을 수 없음")
-            return ""
-        }
-        return key
     }
 }
+
 

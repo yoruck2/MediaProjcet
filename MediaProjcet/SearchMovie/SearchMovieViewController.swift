@@ -13,9 +13,9 @@ import Kingfisher
 
 class SearchMovieViewController: UIViewController {
     
-    let network = NetworkManager.shared
+    let network = TMDBAPI.shared
     
-    var searchedData: SearchedMovieDTO? {
+    var searchedData: SearchedMovie? {
         didSet {
             guard let data = searchedData?.results, data.isEmpty == false else {
                 searchFailedLabel.isHidden = false
@@ -25,7 +25,7 @@ class SearchMovieViewController: UIViewController {
         }
     }
     
-    lazy var movieList: [SearchResultDTO] = []
+    lazy var movieList: [SearchedMovie.Result] = []
     
     var page = 1
     
@@ -157,7 +157,8 @@ extension SearchMovieViewController: UICollectionViewDataSourcePrefetching {
             
             if movieList.count - 1 == indexPaths.item {
                 page += 1
-                network.requestSearch(page: page, with: movieSearchBar.text ?? "") { data in
+                network.requestSearch(api: .searchMovie(query: movieSearchBar.text ?? ""),
+                                      page: page) { data in
                     self.movieList.append(contentsOf: data.results)
                     self.movieCollectionView.reloadData()
                 }
@@ -180,7 +181,8 @@ extension SearchMovieViewController: UISearchBarDelegate {
         guard let text = searchBar.text else {
             return
         }
-        network.requestSearch(page: page, with: text) { [self] data in
+        network.requestSearch(api: .searchMovie(query: text),
+                              page: 1) { [self] data in
             searchedData = data
             movieCollectionView.reloadData()
             if movieList.isEmpty == false {

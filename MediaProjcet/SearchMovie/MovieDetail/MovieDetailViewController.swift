@@ -13,12 +13,12 @@ import Then
 
 class MovieDetailViewController: UIViewController {
     
-    let network = NetworkManager.shared
+    let network = TMDBAPI.shared
     var page = 1
     
-    var movieData: SearchResultDTO?
-    var posterImageList = [[Result(posterPath: "")],[Result](),[Result]()]
-    var posterList = [Poster]()
+    var movieData: SearchedMovie.Result?
+    var posterImageList: [[MovieSuggestion.Result]] = [[],[],[]]
+    var posterList = [MovieImage.Poster]()
     
     let movieTitleLabel = UILabel().then {
         $0.font = Font.bold20
@@ -33,15 +33,20 @@ class MovieDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        movieTitleLabel.text = movieData?.title
+        guard let movieData else {
+            print("movieData 없음")
+            return
+        }
+        movieTitleLabel.text = movieData.title
         configureHierachy()
         configureLayout()
         
         let group = DispatchGroup()
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
-            network.requestSimilarMovie(movieID: Int(movieData?.id ?? 0), page: page) { data in
-                self.posterImageList[0] = data
+            network.requestMovieSuggestion(api: .movieSuggestion(type: .silmilarMovie,
+                                                                 movieId: movieData.id)) { data,_  in
+                self.posterImageList[0] = data ?? [MovieSuggestion.Result(posterPath: "")]
                 self.suggestionMovieTableView.reloadData()
                 group.leave()
             }
@@ -49,8 +54,9 @@ class MovieDetailViewController: UIViewController {
         
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
-            network.requestRecommandMovie(movieID: Int(movieData?.id ?? 0), page: page) { data in
-                self.posterImageList[1] = data
+            network.requestMovieSuggestion(api: .movieSuggestion(type: .recommandationMovie,
+                                                                 movieId: movieData.id)) { data,_  in
+                self.posterImageList[1] = data ?? [MovieSuggestion.Result(posterPath: "")]
                 self.suggestionMovieTableView.reloadData()
                 group.leave()
             }
@@ -58,8 +64,8 @@ class MovieDetailViewController: UIViewController {
         
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
-            network.requestMoviePoster(movieID: Int(movieData?.id ?? 0), page: page) { data in
-                print(self.movieData?.id)
+            network.requestMoviePoster(api: .movieImage(movieId: movieData.id)) { data in
+                
                 self.posterList = data
                 self.suggestionMovieTableView.reloadData()
                 group.leave()
@@ -105,7 +111,8 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
         
         cell.movieCollectionView.dataSource = self
         cell.movieCollectionView.delegate = self
-        cell.movieCollectionView.register(MovieDetailCollectionViewCell.self, forCellWithReuseIdentifier: MovieDetailCollectionViewCell.id)
+        cell.movieCollectionView.register(MovieDetailCollectionViewCell.self, 
+                                          forCellWithReuseIdentifier: MovieDetailCollectionViewCell.id)
         cell.movieCollectionView.tag = indexPath.row
         cell.movieCollectionView.reloadData()
 
@@ -136,18 +143,22 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
 
 extension MovieDetailViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        
+        guard let movieData else {
+            print("movieData 없음")
+            return
+        }
         for indexPaths in indexPaths {
             if posterImageList[collectionView.tag].count - 3 <= indexPaths.item {
-                page += 1
                 if collectionView.tag == 0 {
-                    network.requestSimilarMovie(movieID: Int(movieData?.id ?? 0), page: page) { data in
-                        self.posterImageList[0] = data
+                    page += 1
+                    network.requestMovieSuggestion(api: .movieSuggestion(type: .recommandationMovie, movieId: movieData.id), page: page) { data, _  in
+                        self.posterImageList[0] = data ?? [MovieSuggestion.Result(posterPath: "")]
                         self.suggestionMovieTableView.reloadData()
                     }
                 } else if collectionView.tag == 1 {
-                    network.requestRecommandMovie(movieID: Int(movieData?.id ?? 0), page: page) { data in
-                        self.posterImageList[1] = data
+                    page += 1
+                    network.requestMovieSuggestion(api: .movieSuggestion(type: .silmilarMovie, movieId: movieData.id), page: page) { data, _  in
+                        self.posterImageList[1] = data ?? [MovieSuggestion.Result(posterPath: "")]
                         self.suggestionMovieTableView.reloadData()
                     }
                 }
