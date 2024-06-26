@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SearchedMovieDTO: Codable {
+struct SearchedMovie: Codable {
     let page: Int
     let results: [SearchResultDTO]
     let total_pages, total_results: Int

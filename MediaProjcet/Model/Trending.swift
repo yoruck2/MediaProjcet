@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TrendingDTO: Codable {
+struct Trending: Codable {
     let page: Int
     let results: [TrendingResultDTO]
     let totalPages, totalResults: Int

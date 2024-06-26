@@ -29,14 +29,11 @@ enum TMDBAPI {
     }
 }
 
-struct APIURL {
+struct TMDBRequest {
     static let trendingURL = "https://api.themoviedb.org/3/trending/all/day?api_key=\(APIType.TMDB_API.APIkey)"
-    static let searchMovieURL = "https://api.themoviedb.org/3/search/movie?api_key=\(APIKey.TMDB_Key)"
+    static let searchMovieURL = "https://api.themoviedb.org/3/search/movie?api_key=\(APIType.TMDB_API.APIkey)"
     static let baseURL = "https://api.themoviedb.org/3"
 }
-
-
-
 
 
 // TODO: configuration의 key를 찾지 못하는 이유..?

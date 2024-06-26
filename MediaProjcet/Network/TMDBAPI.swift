@@ -13,9 +13,10 @@ struct NetworkManager {
     static let shared = NetworkManager()
     private init() {}
     
-    // TODO: 제네릭으로 통합
+    typealias TrendingHandler = ([Result]?, String?) -> Void
+    
     func requestSearch(page: Int, with string: String, completion: @escaping (SearchedMovieDTO) -> Void) {
-        AF.request("\(APIURL.searchMovieURL)&query=\(string)&page=\(page)&language=ko-KR")
+        AF.request("\(TMDBRequest.searchMovieURL)&query=\(string)&page=\(page)&language=ko-KR")
             .validate(statusCode: 200..<300)
             .responseDecodable(of: SearchedMovieDTO.self) { response in
                 switch response.result {
@@ -30,7 +31,7 @@ struct NetworkManager {
     func requestRecommandMovie(movieID: Int,
                                page: Int,
                                completion: @escaping ([Result]) -> Void) {
-        let baseURL = APIURL.baseURL + "/\(TMDBAPI.movies.category)" + "/\(movieID)" + "/recommendations"
+        let baseURL = TMDBRequest.baseURL + "/\(TMDBAPI.movies.category)" + "/\(movieID)" + "/recommendations"
         let parameters: Parameters = [
             "language": "ko-KR",
             "page": page
@@ -58,7 +59,7 @@ struct NetworkManager {
     func requestSimilarMovie(movieID: Int,
                              page: Int,
                              completion: @escaping ([Result]) -> Void) {
-        let baseURL = APIURL.baseURL + "/\(TMDBAPI.movies.category)" + "/\(movieID)" + "/similar"
+        let baseURL = TMDBRequest.baseURL + "/\(TMDBAPI.movies.category)" + "/\(movieID)" + "/similar"
         let parameters: Parameters = [
             "language": "ko-KR",
             "page": page
@@ -84,7 +85,7 @@ struct NetworkManager {
     func requestMoviePoster(movieID: Int,
                              page: Int,
                              completion: @escaping ([Poster]) -> Void) {
-        let baseURL = APIURL.baseURL + "/\(TMDBAPI.movies.category)" + "/\(movieID)" + "/images"
+        let baseURL = TMDBRequest.baseURL + "/\(TMDBAPI.movies.category)" + "/\(movieID)" + "/images"
         let parameters: Parameters = [
             "page": page,
             "include_image_language": "en,null"
@@ -106,34 +107,6 @@ struct NetworkManager {
             }
         }
     }
-    
-    
-    //    func requestMovie<T: Codable>(movieID: Int,
-    //                                  page: Int,
-    //                                  DTO: T.Type,
-    //                                  completion: @escaping (T.Type) -> Void) {
-    //        let baseURL = APIURL.baseURL + "\(movieID)" + TMDBAPI.movies.category
-    //        let parameters: Parameters = [
-    //            "language": "ko-KR",
-    //            "page": page
-    //        ]
-    //        let headers: HTTPHeaders = [
-    //            "Authorization": APIKey.TMDB_Token
-    //        ]
-    //        AF.request(baseURL,
-    //                   method: .get,
-    //                   parameters: parameters,
-    //                   headers: headers)
-    //        .validate(statusCode: 200..<300)
-    //        .responseDecodable(of: T.self) { response in
-    //            switch response.result {
-    //            case .success(let data):
-    //                completion(data as! T.Type)
-    //            case .failure(let error):
-    //                print(error)
-    //            }
-    //        }
-    //    }
 }
 
 

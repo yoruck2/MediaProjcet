@@ -7,20 +7,23 @@
 
 import Foundation
 
-struct Movie: Decodable {
-    let results: [Result]
-}
-
-struct Result: Decodable {
-    let posterPath: String
+struct MovieSuggestion: Decodable {
+    let results: [MovieSuggestion.Result]
     
-    enum CodingKeys: String, CodingKey {
-        case posterPath = "poster_path"
+    struct Result: Decodable {
+        let posterPath: String
+        
+        enum CodingKeys: String, CodingKey {
+            case posterPath = "poster_path"
+        }
     }
 }
 
+
+
 struct Posters: Decodable {
     let posters: [Poster]
+    
 }
 
 struct Poster: Decodable {
