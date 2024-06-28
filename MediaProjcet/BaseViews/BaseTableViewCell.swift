@@ -4,19 +4,20 @@
 //
 //  Created by dopamint on 6/28/24.
 //
+import UIKit
 
 class BaseTableViewCell: UITableViewCell {
   
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setUpHierarchy()
-        setUpLayout()
-        setUpView()
+        configureHierarchy()
+        configureLayout()
+        configureView()
     }
-    func setUpHierarchy() {}
-    func setUpLayout() {}
-    func setUpView() {}
+    func configureHierarchy() {}
+    func configureLayout() {}
+    func configureView() {}
     
     // 모든 iOS버전에서 사용하지 않겠다
     @available(*, unavailable)
