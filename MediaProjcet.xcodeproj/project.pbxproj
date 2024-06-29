@@ -144,11 +144,11 @@
 		8496E77F2C1868A600F87AF8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				84563DAD2C2E9AA700F7C7E4 /* TMDBModel.swift */,
-				8496E7812C1868DD00F87AF8 /* SearchedMovie.swift */,
 				8496E76D2C17C38D00F87AF8 /* Trending.swift */,
+				8496E7812C1868DD00F87AF8 /* SearchedMovie.swift */,
 				84E069082C2A10ED008DE620 /* MovieSuggestion.swift */,
 				84563DA82C2C8A0700F7C7E4 /* MovieImage.swift */,
+				84563DAD2C2E9AA700F7C7E4 /* TMDBModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

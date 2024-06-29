@@ -36,10 +36,10 @@ class MovieDetailViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let movieData else {
-            print("movieData 없음")
+//            print("movieData 없음")
             return
         }
-        print(movieData.id)
+//        print(movieData.id)
         // TODO: 영화제목이 화면을 넘어갈 시, 자동 수평 스크롤이 되도록 만들기
         movieTitleLabel.text = movieData.title
         
@@ -127,7 +127,6 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
         cell.movieCollectionView.prefetchDataSource = self
         cell.movieCollectionView.register(MovieDetailCollectionViewCell.self,
                                           forCellWithReuseIdentifier: MovieDetailCollectionViewCell.id)
-        print(indexPath.row)
         cell.movieCollectionView.reloadData()
         
         return cell
@@ -143,8 +142,6 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieDetailCollectionViewCell.id,
                                                       for: indexPath) as! MovieDetailCollectionViewCell
         
-        print(collectionView.visibleCells.count, "있네요")
-        
         // TODO: 포스터 이미지가 없는 경우 어떻게 처리 할 것인가?
         // filePath가 없다면 셀생성을 하지 않기??
         if collectionView.tag == 2 {
@@ -152,7 +149,6 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
             let data = posterList[indexPath.item]
             let url = URL(string: "https://image.tmdb.org/t/p/w500/\(data.filePath)")
             cell.posterImageView.kf.setImage(with: url)
-            print(url as Any)
             return cell
             
         } else {

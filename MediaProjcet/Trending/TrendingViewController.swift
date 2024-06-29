@@ -10,9 +10,9 @@ import UIKit
 import Alamofire
 import SnapKit
 
-class TrendingViewController: UIViewController {
+class TrendingViewController: BaseViewController {
     
-//    var trendingData: TrendingDTO = TrendingDTO
+    //    var trendingData: TrendingDTO = TrendingDTO
     
     lazy var trendingCollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout())
     
@@ -24,32 +24,30 @@ class TrendingViewController: UIViewController {
         let width = UIScreen.main.bounds.width - (sectionSpacing * 2)
         layout.itemSize = CGSize(width: width, height: width)
         layout.scrollDirection = .vertical
-//        layout.minimumInteritemSpacing = cellSpacing
-//        layout.minimumLineSpacing = cellSpacing
+        //        layout.minimumInteritemSpacing = cellSpacing
+        //        layout.minimumLineSpacing = cellSpacing
         layout.sectionInset = UIEdgeInsets(top: sectionSpacing, left: sectionSpacing, bottom: sectionSpacing, right: sectionSpacing)
         return layout
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureHierachy()
-        configureLayout()
-        configureUI()
         
-//        trendingCollectionView.delegate = self
-//        trendingCollectionView.dataSource = self
+        //        trendingCollectionView.delegate = self
+        //        trendingCollectionView.dataSource = self
         trendingCollectionView.register(TrendingCollectionViewCell.self, forCellWithReuseIdentifier: TrendingCollectionViewCell.id)
     }
     
-    func configureHierachy() {
+    override func configureHierarchy() {
         view.addSubview(trendingCollectionView)
     }
-    func configureLayout() {
+    override func configureLayout() {
         trendingCollectionView.snp.makeConstraints {
             $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
-    func configureUI() {
+    
+    override func configureView() {
         setUpNavigationBar()
     }
     
@@ -82,11 +80,11 @@ class TrendingViewController: UIViewController {
 }
 
 //extension TrendingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-//    
+//
 //    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 //        trendingData?.results.count
 //    }
-//    
+//
 //    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 //        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrendingCollectionViewCell.id, for: indexPath) as? TrendingCollectionViewCell
 //        else {
