@@ -16,11 +16,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        let main = UINavigationController(rootViewController: SearchMovieViewController())
+        let searchMovieVC = UINavigationController(rootViewController: SearchMovieViewController())
+        let trendingVC = UINavigationController(rootViewController: TrendingViewController()) 
         
+        let tabBarController = UITabBarController()
+        tabBarController.setViewControllers([searchMovieVC, trendingVC], animated: true)
+        tabBarController.tabBar.tintColor = .white
+        
+        if let items = tabBarController.tabBar.items {
+            items[0].selectedImage = UIImage(systemName: "popcorn.fill")
+            items[0].image = UIImage(systemName: "popcorn")
+            items[0].title = "search"
+            
+            items[1].image = UIImage(systemName: "chart.line.uptrend.xyaxis")
+            items[1].title = "trending"
+        }
         
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = main
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
 
