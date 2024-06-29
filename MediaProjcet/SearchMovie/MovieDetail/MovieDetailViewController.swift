@@ -11,26 +11,7 @@ import Kingfisher
 import SnapKit
 import Then
 
-// TODO: 디코딩 모델까지 enum 으로 만들수 있을까?
-//enum DecodingModel<T: Decodable> {
-//    case searchedMovie
-//    case movieSuggestion
-//    case movieImage
-//
-//    var type: T {
-//        switch self {
-//        case .searchedMovie:
-//            return SearchedMovie.self as! T
-//        case .movieSuggestion:
-//            return MovieSuggestion.self as! T
-//        case .movieImage:
-//            return MovieImage.self as! T
-//        z
-//        }
-//    }
-//}
-
-class MovieDetailViewController: UIViewController {
+class MovieDetailViewController: BaseViewController {
     
     let network = TMDBAPI.shared
     var similarPage = 1
@@ -51,7 +32,7 @@ class MovieDetailViewController: UIViewController {
         $0.rowHeight =  240
         $0.register(MovieDetailTableViewCell.self, forCellReuseIdentifier: MovieDetailTableViewCell.id)
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let movieData else {
@@ -61,15 +42,13 @@ class MovieDetailViewController: UIViewController {
         print(movieData.id)
         // TODO: 영화제목이 화면을 넘어갈 시, 자동 수평 스크롤이 되도록 만들기
         movieTitleLabel.text = movieData.title
-        configureHierachy()
-        configureLayout()
         
         let group = DispatchGroup()
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
             network.request(api: .movieSuggestion(type: .similarMovie,
                                                   movieId: movieData.id,
-                                                  page: similarPage), 
+                                                  page: similarPage),
                             model: MovieSuggestion.self) { data,_  in
                 self.posterImageList[0] = data?.results ?? []
                 group.leave()
@@ -78,7 +57,7 @@ class MovieDetailViewController: UIViewController {
         
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
-            network.request(api: .movieSuggestion(type: .recommandationMovie, 
+            network.request(api: .movieSuggestion(type: .recommandationMovie,
                                                   movieId: movieData.id,
                                                   page: recommandPage),
                             model: MovieSuggestion.self) { data,_  in
@@ -89,7 +68,7 @@ class MovieDetailViewController: UIViewController {
         
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
-            network.request(api: .movieImage(movieId: movieData.id), 
+            network.request(api: .movieImage(movieId: movieData.id),
                             model: MovieImage.self) { data,_ in
                 self.posterList = data?.posters ?? []
                 group.leave()
@@ -101,12 +80,12 @@ class MovieDetailViewController: UIViewController {
         }
     }
     
-    func configureHierachy() {
+    override func configureHierarchy() {
         view.addSubviews(movieTitleLabel,
                          suggestionMovieTableView)
     }
     
-    func configureLayout() {
+    override func configureLayout() {
         movieTitleLabel.snp.makeConstraints { make in
             make.leading.top.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
@@ -135,9 +114,9 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
         // TODO: selectionStyle: 만약 다른 뷰들도 마찬가지라면 base로 옮기기
         cell.selectionStyle = .none
         
-        if posterImageList[indexPath.row].isEmpty {
+        if posterImageList[indexPath.row].isEmpty && indexPath.row != 2 {
             cell.emptyLabel.isHidden = false
-            cell.emptyLabel.text = "제안드릴 영화가 없네요"
+            cell.emptyLabel.text = "제안드릴 영화가 없네요."
             return cell
         }
         cell.emptyLabel.isHidden = true

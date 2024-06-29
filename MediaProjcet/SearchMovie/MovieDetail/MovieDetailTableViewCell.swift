@@ -18,7 +18,7 @@ class MovieDetailTableViewCell: BaseTableViewCell {
     }
     
     let emptyLabel = UILabel().then {
-        $0.text = ""
+        $0.text = "제안드릴 영화가 없네요"
         $0.textColor = .white
         $0.font = Font.bold13
         $0.isHidden = true

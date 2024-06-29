@@ -11,7 +11,7 @@ import SnapKit
 import Kingfisher
 
 
-class SearchMovieViewController: UIViewController {
+class SearchMovieViewController: BaseViewController {
     
     let network = TMDBAPI.shared
     
@@ -64,21 +64,18 @@ class SearchMovieViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureHierarchy()
-        configureLayout()
-        cnofigureView()
         setUpCollectionView()
         setUpSearchBar()
     }
     
-    func configureHierarchy() {
+    override func configureHierarchy() {
         view.addSubviews(movieSearchBar,
                          movieCollectionView,
                          movieSearchBar,
                          searchFailedLabel)
     }
     
-    func configureLayout() {
+    override func configureLayout() {
         movieSearchBar.snp.makeConstraints {
             $0.horizontalEdges.top.equalTo(view.safeAreaLayoutGuide)
         }
@@ -94,7 +91,7 @@ class SearchMovieViewController: UIViewController {
         }
     }
     
-    func cnofigureView() {
+    override func cnofigureView() {
         navigationItem.title = "영화 검색"
     }
     
