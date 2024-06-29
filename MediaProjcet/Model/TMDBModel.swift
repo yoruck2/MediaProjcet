@@ -7,6 +7,8 @@
 
 import Foundation
 
+// TODO: request의 model 파라미터 자리에 enum을 활용하기?
+
 //protocol TMDBModel {
 //    
 //}

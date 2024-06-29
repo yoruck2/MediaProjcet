@@ -35,7 +35,6 @@ struct TMDBAPI {
             case .success(let value):
                 completion(value, nil)
                 print("성공\(api.endPoint)")
-                
             case .failure(let error):
                 completion(nil, error)
                 print("실패\(api.endPoint)")

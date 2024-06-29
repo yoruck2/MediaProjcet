@@ -8,7 +8,7 @@
 import Foundation
 
 struct MovieSuggestion: Decodable {
-    let results: [MovieSuggestion.Result]
+    let results: [MovieSuggestion.Result]?
     
     struct Result: Decodable {
         let posterPath: String?

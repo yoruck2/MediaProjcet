@@ -8,10 +8,10 @@
 import Foundation
 
 struct MovieImage: Decodable {
-    let posters: [MovieImage.Poster]
+    let posters: [MovieImage.Poster]?
     
     struct Poster: Decodable {
-        let filePath: String
+        let filePath: String?
         
         enum CodingKeys: String, CodingKey {
             case filePath = "file_path"
