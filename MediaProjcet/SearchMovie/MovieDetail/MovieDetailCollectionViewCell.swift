@@ -21,6 +21,7 @@ class MovieDetailCollectionViewCell: BaseCollectionViewCell {
     override func configureLayout() {
         posterImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+            
         }
     }
     override func configureView() {
