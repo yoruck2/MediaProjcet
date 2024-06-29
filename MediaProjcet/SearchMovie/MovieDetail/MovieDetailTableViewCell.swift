@@ -17,6 +17,13 @@ class MovieDetailTableViewCell: BaseTableViewCell {
         $0.textColor = .white
     }
     
+    let emptyLabel = UILabel().then {
+        $0.text = ""
+        $0.textColor = .white
+        $0.font = Font.bold13
+        $0.isHidden = true
+    }
+    
     lazy var movieCollectionView = UICollectionView(frame: .zero,
                                                     collectionViewLayout: collectionViewLayout())
     func collectionViewLayout() -> UICollectionViewLayout {
@@ -26,13 +33,16 @@ class MovieDetailTableViewCell: BaseTableViewCell {
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
         layout.scrollDirection = .horizontal
-        layout.collectionView?.showsVerticalScrollIndicator = false
+        
+        // TODO: 인디케이터 왜 안없어짐??
+        layout.collectionView?.showsHorizontalScrollIndicator = false
         return layout
     }
     
     override func configureHierarchy() {
         contentView.addSubview(titleLabel)
         contentView.addSubview(movieCollectionView)
+        contentView.addSubview(emptyLabel)
     }
     
     override func configureLayout() {
@@ -42,6 +52,9 @@ class MovieDetailTableViewCell: BaseTableViewCell {
         movieCollectionView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(10)
             make.horizontalEdges.bottom.equalToSuperview()
+        }
+        emptyLabel.snp.makeConstraints { make in
+            make.center.equalTo(movieCollectionView.snp.center)
         }
     }
 }
