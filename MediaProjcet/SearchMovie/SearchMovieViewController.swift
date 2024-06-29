@@ -11,7 +11,7 @@ import SnapKit
 import Kingfisher
 
 
-class SearchMovieViewController: UIViewController {
+class SearchMovieViewController: BaseViewController {
     
     let network = TMDBAPI.shared
     
@@ -38,7 +38,7 @@ class SearchMovieViewController: UIViewController {
     lazy var movieCollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout())
     
     func collectionViewLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()   // tableView.rowHeight 역할
+        let layout = UICollectionViewFlowLayout()
         let sectionSpacing: CGFloat = 20
         let cellSpacing: CGFloat = 16
         
@@ -64,22 +64,18 @@ class SearchMovieViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        configureHierachy()
-        configureLayout()
-        configureUI()
         setUpCollectionView()
         setUpSearchBar()
     }
     
-    func configureHierachy() {
+    override func configureHierarchy() {
         view.addSubviews(movieSearchBar,
                          movieCollectionView,
                          movieSearchBar,
                          searchFailedLabel)
     }
     
-    func configureLayout() {
+    override func configureLayout() {
         movieSearchBar.snp.makeConstraints {
             $0.horizontalEdges.top.equalTo(view.safeAreaLayoutGuide)
         }
@@ -95,7 +91,7 @@ class SearchMovieViewController: UIViewController {
         }
     }
     
-    func configureUI() {
+    override func cnofigureView() {
         navigationItem.title = "영화 검색"
     }
     
@@ -107,9 +103,9 @@ class SearchMovieViewController: UIViewController {
         movieCollectionView.register(SerachMovieCollectionViewCell.self,
                                      forCellWithReuseIdentifier: SerachMovieCollectionViewCell.id)
     }
+    
     func setUpSearchBar() {
         movieSearchBar.delegate = self
-        
     }
 }
 
@@ -135,7 +131,7 @@ extension SearchMovieViewController: UICollectionViewDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        var vc = MovieDetailViewController()
+        let vc = MovieDetailViewController()
         vc.movieData = movieList[indexPath.item]
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -148,18 +144,22 @@ extension SearchMovieViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for indexPaths in indexPaths {
             
-            print(indexPaths)
-            print(indexPaths.section)
-            print(indexPaths.row)
-            print(indexPaths.item)
-            print("=-=-=-=-=-=-=-=-=-=-")
-            print(movieList.count)
+//            print(indexPaths)
+//            print(indexPaths.section)
+//            print(indexPaths.row)
+//            print(indexPaths.item)
+//            print("=-=-=-=-=-=-=-=-=-=-")
+//            print(movieList.count)
+//            
+            guard let text = movieSearchBar.text else {
+                return
+            }
             
-            if movieList.count - 1 == indexPaths.item {
+            if movieList.count - 4 == indexPaths.item {
                 page += 1
-                network.requestSearch(api: .searchMovie(query: movieSearchBar.text ?? ""),
-                                      page: page) { data in
-                    self.movieList.append(contentsOf: data.results)
+                network.request(api: .searchMovie(query: text),
+                                page: page, model: SearchedMovie.self) { data, error in
+                    self.movieList.append(contentsOf: data?.results ?? [] )
                     self.movieCollectionView.reloadData()
                 }
             }
@@ -181,8 +181,7 @@ extension SearchMovieViewController: UISearchBarDelegate {
         guard let text = searchBar.text else {
             return
         }
-        network.requestSearch(api: .searchMovie(query: text),
-                              page: 1) { [self] data in
+        network.request(api: .searchMovie(query: text), model: SearchedMovie.self) { [self] data, error in
             searchedData = data
             movieCollectionView.reloadData()
             if movieList.isEmpty == false {

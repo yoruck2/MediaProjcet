@@ -6,30 +6,26 @@
 //
 
 import UIKit
+import Then
+import SnapKit
 
-class MovieDetailCollectionViewCell: UICollectionViewCell {
+class MovieDetailCollectionViewCell: BaseCollectionViewCell {
     
     var posterImageView = UIImageView().then {
         $0.backgroundColor = .gray
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
+    override func configureHierarchy() {
         contentView.addSubview(posterImageView)
+    }
+    override func configureLayout() {
         posterImageView.snp.makeConstraints { make in
-            make.edges.equalTo(contentView.safeAreaLayoutGuide)
+            make.edges.equalToSuperview()
         }
-        layer.cornerRadius = 10
-        clipsToBounds = true
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override func configureView() {
+        contentView.backgroundColor = .clear
+        contentView.layer.cornerRadius = 10
+        contentView.clipsToBounds = true
     }
-    
-//    override func layoutSubviews() {
-//        layer.cornerRadius = 10
-//        clipsToBounds = true
-//    }
 }

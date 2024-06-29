@@ -11,6 +11,25 @@ import Kingfisher
 import SnapKit
 import Then
 
+// TODO: 디코딩 모델까지 enum 으로 만들수 있을까?
+//enum DecodingModel<T: Decodable> {
+//    case searchedMovie
+//    case movieSuggestion
+//    case movieImage
+//    
+//    var type: T {
+//        switch self {
+//        case .searchedMovie:
+//            return SearchedMovie.self as! T
+//        case .movieSuggestion:
+//            return MovieSuggestion.self as! T
+//        case .movieImage:
+//            return MovieImage.self as! T
+//        z
+//        }
+//    }
+//}
+
 class MovieDetailViewController: UIViewController {
     
     let network = TMDBAPI.shared
@@ -18,7 +37,7 @@ class MovieDetailViewController: UIViewController {
     
     var movieData: SearchedMovie.Result?
     var posterImageList: [[MovieSuggestion.Result]] = [[],[],[]]
-    var posterList = [MovieImage.Poster]()
+    var posterList: [MovieImage.Poster] = [MovieImage.Poster(filePath: "")]
     
     let movieTitleLabel = UILabel().then {
         $0.font = Font.bold20
@@ -27,7 +46,7 @@ class MovieDetailViewController: UIViewController {
     lazy var suggestionMovieTableView = UITableView().then {
         $0.delegate = self
         $0.dataSource = self
-        $0.rowHeight =  200
+        $0.rowHeight =  240
         $0.register(MovieDetailTableViewCell.self, forCellReuseIdentifier: MovieDetailTableViewCell.id)
     }
     
@@ -44,34 +63,27 @@ class MovieDetailViewController: UIViewController {
         let group = DispatchGroup()
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
-            network.requestMovieSuggestion(api: .movieSuggestion(type: .silmilarMovie,
-                                                                 movieId: movieData.id)) { data,_  in
-                self.posterImageList[0] = data ?? [MovieSuggestion.Result(posterPath: "")]
-                self.suggestionMovieTableView.reloadData()
+            network.request(api: .movieSuggestion(type: .similarMovie, movieId: movieData.id), model: MovieSuggestion.self) { data,_  in
+                self.posterImageList[0] = data?.results ?? []
                 group.leave()
             }
         }
         
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
-            network.requestMovieSuggestion(api: .movieSuggestion(type: .recommandationMovie,
-                                                                 movieId: movieData.id)) { data,_  in
-                self.posterImageList[1] = data ?? [MovieSuggestion.Result(posterPath: "")]
-                self.suggestionMovieTableView.reloadData()
+            network.request(api: .movieSuggestion(type: .recommandationMovie, movieId: movieData.id), model: MovieSuggestion.self) { data,_  in
+                self.posterImageList[1] = data?.results ?? []
                 group.leave()
             }
         }
         
         group.enter()
         DispatchQueue.global().async(group: group) { [self] in
-            network.requestMoviePoster(api: .movieImage(movieId: movieData.id)) { data in
-                
-                self.posterList = data
-                self.suggestionMovieTableView.reloadData()
+            network.request(api: .movieImage(movieId: movieData.id), model: MovieImage.self) { data,_ in
+                self.posterList = data?.posters ?? []
                 group.leave()
             }
         }
-        
         group.notify(queue: .main) {
             self.suggestionMovieTableView.reloadData()
         }
@@ -109,11 +121,12 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.titleLabel.text = "포스터"
         }
         
+        cell.movieCollectionView.tag = indexPath.row
         cell.movieCollectionView.dataSource = self
         cell.movieCollectionView.delegate = self
-        cell.movieCollectionView.register(MovieDetailCollectionViewCell.self, 
+        cell.movieCollectionView.register(MovieDetailCollectionViewCell.self,
                                           forCellWithReuseIdentifier: MovieDetailCollectionViewCell.id)
-        cell.movieCollectionView.tag = indexPath.row
+        print(indexPath.row)
         cell.movieCollectionView.reloadData()
 
         return cell
@@ -126,15 +139,18 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieDetailCollectionViewCell.id, for: indexPath) as! MovieDetailCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieDetailCollectionViewCell.id, 
+                                                      for: indexPath) as! MovieDetailCollectionViewCell
         if collectionView.tag == 2 {
             let data = posterList[indexPath.item]
             let url = URL(string: "https://image.tmdb.org/t/p/w500/\(data.filePath)")
             cell.posterImageView.kf.setImage(with: url)
+            print(url as Any)
             return cell
+            
         } else {
             let data = posterImageList[collectionView.tag][indexPath.item]
-            let url = URL(string: "https://image.tmdb.org/t/p/w500/\(data.posterPath)")
+            let url = URL(string: "https://image.tmdb.org/t/p/w500/\(data.posterPath ?? "")")
             cell.posterImageView.kf.setImage(with: url)
             return cell
         }
@@ -143,6 +159,8 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
 
 extension MovieDetailViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        print(#function)
+        
         guard let movieData else {
             print("movieData 없음")
             return
@@ -151,14 +169,14 @@ extension MovieDetailViewController: UICollectionViewDataSourcePrefetching {
             if posterImageList[collectionView.tag].count - 3 <= indexPaths.item {
                 if collectionView.tag == 0 {
                     page += 1
-                    network.requestMovieSuggestion(api: .movieSuggestion(type: .recommandationMovie, movieId: movieData.id), page: page) { data, _  in
-                        self.posterImageList[0] = data ?? [MovieSuggestion.Result(posterPath: "")]
+                    network.request(api: .movieSuggestion(type: .similarMovie, movieId: movieData.id), page: page, model: MovieSuggestion.self) { data, _  in
+                        self.posterImageList[0] = data?.results ?? []
                         self.suggestionMovieTableView.reloadData()
                     }
                 } else if collectionView.tag == 1 {
                     page += 1
-                    network.requestMovieSuggestion(api: .movieSuggestion(type: .silmilarMovie, movieId: movieData.id), page: page) { data, _  in
-                        self.posterImageList[1] = data ?? [MovieSuggestion.Result(posterPath: "")]
+                    network.request(api: .movieSuggestion(type: .recommandationMovie, movieId: movieData.id), page: page, model: MovieSuggestion.self) { data, _  in
+                        self.posterImageList[1] = data?.results ?? []
                         self.suggestionMovieTableView.reloadData()
                     }
                 }

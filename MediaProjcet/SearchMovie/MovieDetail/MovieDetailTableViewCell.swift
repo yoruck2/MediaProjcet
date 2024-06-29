@@ -10,21 +10,11 @@ import UIKit
 import SnapKit
 import Then
 
-class MovieDetailTableViewCell: UITableViewCell {
+class MovieDetailTableViewCell: BaseTableViewCell {
     
     let titleLabel = UILabel().then {
         $0.font = .boldSystemFont(ofSize: 18)
         $0.textColor = .white
-    }
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureHierarchy()
-        configureLayout()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     lazy var movieCollectionView = UICollectionView(frame: .zero,
@@ -40,21 +30,18 @@ class MovieDetailTableViewCell: UITableViewCell {
         return layout
     }
     
-    func configureHierarchy() {
+    override func configureHierarchy() {
         contentView.addSubview(titleLabel)
         contentView.addSubview(movieCollectionView)
-        
     }
     
-    func configureLayout() {
+    override func configureLayout() {
         titleLabel.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalTo(contentView).inset(20)
-            make.height.equalTo(20)
+            make.top.horizontalEdges.equalToSuperview().inset(20)
         }
-        // MARK: offset 주면 radius가 꺼짐??? -
         movieCollectionView.snp.makeConstraints { make in
-            make.horizontalEdges.bottom.equalTo(contentView)
-            make.top.equalTo(titleLabel.snp.bottom)
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.horizontalEdges.bottom.equalToSuperview()
         }
     }
 }

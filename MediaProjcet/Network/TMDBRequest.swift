@@ -19,7 +19,7 @@ enum TMDBRequest {
         case Movie = "movie"
     }
     enum SuggestionType: String {
-        case silmilarMovie = "similar"
+        case similarMovie = "similar"
         case recommandationMovie = "recommendations"
     }
     enum Language: String {
