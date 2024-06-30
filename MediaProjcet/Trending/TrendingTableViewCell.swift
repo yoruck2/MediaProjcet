@@ -19,6 +19,7 @@ class TrendingTableViewCell: BaseTableViewCell {
     }
     lazy var genreLabel = UILabel().then {
         $0.text = "asd"
+        $0.font = Font.bold20
     }
     lazy var trendView = TrendView()
     
@@ -30,19 +31,23 @@ class TrendingTableViewCell: BaseTableViewCell {
     
     override func configureLayout() {
         dateLabel.snp.makeConstraints { make in
-            make.leading.top.equalTo(safeAreaLayoutGuide).inset(10)
+            make.leading.equalTo(safeAreaLayoutGuide).inset(20)
+            make.top.equalTo(safeAreaLayoutGuide).inset(15)
         }
         
         genreLabel.snp.makeConstraints { make in
-            make.leading.equalTo(dateLabel).offset(5)
-            make.top.equalTo(dateLabel.snp.bottom).offset(5)
+            make.leading.equalTo(dateLabel)
+            make.top.equalTo(dateLabel.snp.bottom)
         }
         
         trendView.snp.makeConstraints { make in
             make.top.equalTo(genreLabel.snp.bottom).offset(5)
+            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(20)
+            make.bottom.equalTo(safeAreaLayoutGuide).inset(30)
         }
     }
     override func configureView() {
-        <#code#>
+        selectionStyle = .none
+        
     }
 }

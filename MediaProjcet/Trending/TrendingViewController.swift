@@ -12,41 +12,34 @@ import SnapKit
 
 class TrendingViewController: BaseViewController {
     
-    //    var trendingData: TrendingDTO = TrendingDTO
+    let network = TMDBAPI.shared
+    var trendingList: [Trending.Result] = []
     
-    lazy var trendingCollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout())
-    
-    func collectionViewLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()   // tableView.rowHeight 역할
-        let sectionSpacing: CGFloat = 10
-        let cellSpacing: CGFloat = 16
-        
-        let width = UIScreen.main.bounds.width - (sectionSpacing * 2)
-        layout.itemSize = CGSize(width: width, height: width)
-        layout.scrollDirection = .vertical
-        //        layout.minimumInteritemSpacing = cellSpacing
-        //        layout.minimumLineSpacing = cellSpacing
-        layout.sectionInset = UIEdgeInsets(top: sectionSpacing, left: sectionSpacing, bottom: sectionSpacing, right: sectionSpacing)
-        return layout
+    lazy var trendingTableView = UITableView().then {
+        $0.delegate = self
+        $0.dataSource = self
+//        $0.prefetchDataSource = self
+        $0.register(TrendingTableViewCell.self, forCellReuseIdentifier: TrendingTableViewCell.id)
+        $0.rowHeight = 450
+        $0.separatorStyle = .none
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //        trendingCollectionView.delegate = self
-        //        trendingCollectionView.dataSource = self
-        trendingCollectionView.register(TrendingCollectionViewCell.self, forCellWithReuseIdentifier: TrendingCollectionViewCell.id)
-    }
-    
-    override func configureHierarchy() {
-        view.addSubview(trendingCollectionView)
-    }
-    override func configureLayout() {
-        trendingCollectionView.snp.makeConstraints {
-            $0.edges.equalTo(view.safeAreaLayoutGuide)
+        network.request(api: .trending(type: .Movie, language: .korean), model: Trending.self) { [self] data, error in
+            trendingList = data?.results ?? []
         }
     }
     
+    override func configureHierarchy() {
+        view.addSubview(trendingTableView)
+    }
+    override func configureLayout() {
+        trendingTableView.snp.makeConstraints {
+            $0.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
     override func configureView() {
         setUpNavigationBar()
     }
@@ -79,18 +72,22 @@ class TrendingViewController: BaseViewController {
     }
 }
 
-//extension TrendingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-//
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        trendingData?.results.count
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrendingCollectionViewCell.id, for: indexPath) as? TrendingCollectionViewCell
-//        else {
-//            return UICollectionViewCell()
-//        }
-//
-//        return cell
-//    }
-//}
+extension TrendingViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TrendingTableViewCell.id, 
+                                                       for: indexPath) as? TrendingTableViewCell
+        else {
+            return UITableViewCell()
+        }
+        
+//        cell.cellData = trendingList[indexPath.row]
+        
+        return cell
+    }
+    
+    
+}
