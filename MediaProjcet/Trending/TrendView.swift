@@ -12,12 +12,6 @@ import Then
 
 class TrendView: BaseView {
     
-    let shadowView = UIView().then {
-        $0.layer.shadowOpacity = 0.4
-        $0.layer.shadowRadius = 4
-        $0.layer.shadowOffset = .init(width: 5, height: 5)
-        $0.layer.masksToBounds = false
-    }
     let backView = UIView().then {
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
@@ -27,30 +21,32 @@ class TrendView: BaseView {
         $0.contentMode = .scaleAspectFill
         $0.image = UIImage(systemName: "star")
     }
-    let rateView = UIImageView().then {
+    let rateView = UILabel().then {
         $0.backgroundColor = .purple
+        $0.text = " 평점 "
     }
-    let halfView = UILabel()
+    let rateValueView = UILabel().then {
+        $0.backgroundColor = .white
+        $0.textColor = .black
+    }
     
     let descriptionView = UIView().then {
         $0.backgroundColor = .black
     }
     let titleLabel = UILabel().then {
-        $0.text = "dfdfsdfdfdd"
+        $0.text = "불러오는 중.."
         $0.textColor = .white
         $0.font = Font.regular20
     }
     let castLabel = UILabel().then {
-        $0.text = "ddasfsafsadfdsfd"
+        $0.text = "불러오는 중.."
         $0.textColor = .gray
     }
     let borderLine = UIView().then {
         $0.backgroundColor = .white
-//        $0.layer.borderColor = UIColor(named: "white")?.cgColor
-//        $0.layer.borderWidth = 1
     }
     let detailLabel = UILabel().then {
-        $0.text = "ddd"
+        $0.text = "자세히 보기"
         $0.textColor = .white
     }
     let indicatorSymbol = UIImageView().then {
@@ -58,12 +54,9 @@ class TrendView: BaseView {
         $0.tintColor = .white
     }
     override func configureHierarchy() {
-        addSubviews(shadowView)
-        shadowView.addSubviews(backView)
+        addSubviews(backView)
         backView.addSubviews(backImageView)
         
-        backImageView.addSubviews(rateView)
-        backImageView.addSubviews(halfView)
         backImageView.addSubviews(descriptionView)
         
         descriptionView.addSubviews(titleLabel)
@@ -71,26 +64,25 @@ class TrendView: BaseView {
         descriptionView.addSubviews(borderLine)
         descriptionView.addSubviews(detailLabel)
         descriptionView.addSubviews(indicatorSymbol)
+        backImageView.addSubviews(rateView)
+        backImageView.addSubviews(rateValueView)
     }
     override func configureLayout() {
-        shadowView.snp.makeConstraints { make in
-            make.edges.equalTo(safeAreaLayoutGuide)
-        }
+
         backView.snp.makeConstraints { make in
             make.edges.equalTo(safeAreaLayoutGuide)
         }
         backImageView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalTo(safeAreaLayoutGuide)
-//            make.bottom.equalTo(safeAreaLayoutGuide).inset(50)
             make.height.equalTo(safeAreaLayoutGuide).multipliedBy(0.85)
         }
         rateView.snp.makeConstraints { make in
-            make.leading.equalTo(safeAreaLayoutGuide).inset(10)
+            make.leading.equalTo(safeAreaLayoutGuide).inset(20)
             make.bottom.equalTo(descriptionView.snp.top).offset(-10)
         }
-        halfView.snp.makeConstraints { make in
-            make.verticalEdges.trailing.equalTo(rateView)
-            make.width.equalTo(rateView.snp.width).multipliedBy(0.5)
+        rateValueView.snp.makeConstraints { make in
+            make.leading.equalTo(rateView.snp.trailing)
+            make.top.equalTo(rateView)
         }
         descriptionView.snp.makeConstraints { make in
             make.horizontalEdges.bottom.equalTo(safeAreaLayoutGuide)
@@ -101,7 +93,7 @@ class TrendView: BaseView {
             make.top.equalTo(descriptionView).inset(15)
         }
         castLabel.snp.makeConstraints { make in
-            make.leading.equalTo(titleLabel)
+            make.leading.trailing.equalTo(titleLabel)
             make.top.equalTo(titleLabel.snp.bottom)
         }
         borderLine.snp.makeConstraints { make in
@@ -123,8 +115,8 @@ class TrendView: BaseView {
     override func configureView() {
         layer.shadowOpacity = 0.4
         layer.shadowRadius = 4
-        layer.shadowOffset = .init(width: 5, height: 5)
-        layer.shadowColor = UIColor(named: "white")?.cgColor
+        layer.shadowOffset = .init(width: 10, height: 10)
+        layer.shadowColor = UIColor(named: "purple")?.cgColor
         layer.masksToBounds = false
     }
 }

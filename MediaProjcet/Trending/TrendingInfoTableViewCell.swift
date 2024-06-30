@@ -5,4 +5,10 @@
 //  Created by dopamint on 7/1/24.
 //
 
-import Foundation
+import UIKit
+import SnapKit
+import Then
+
+class TrendingInfoTableViewCell: BaseTableViewCell {
+    
+}

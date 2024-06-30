@@ -9,27 +9,27 @@ import UIKit
 import SnapKit
 import Then
 
-class TrendingDetailViewController: BaseViewController {
+class TrendingInfoViewController: BaseViewController {
+    
+    var castList: [MovieCredits.Result]?
     
     let backdropImageView = UIImageView().then {
         $0.image = UIImage(named: "star")
     }
-    
     let titleLabel = UILabel().then {
         $0.text = "Squid Game"
         $0.font = Font.bold30
         $0.textColor = .white
     }
-    
     let posterImageView = UIImageView().then {
         $0.image = UIImage(named: "star")
     }
-    
-    let movieInfoTableView = UITableView().then {
-        $0.estimatedRowHeight = 100
+    lazy var movieInfoTableView = UITableView().then {
+        $0.estimatedRowHeight = 200
+        $0.delegate = self
+        $0.dataSource = self
+        $0.register(TrendingInfoTableViewCell.self, forCellReuseIdentifier: TrendingInfoTableViewCell.id)
     }
-    
-    
     override func configureHierarchy() {
         view.addSubview(backdropImageView)
         view.addSubview(titleLabel)
@@ -61,13 +61,21 @@ class TrendingDetailViewController: BaseViewController {
     }
 }
 
-extension TrendingDetailViewController: UITableViewDelegate, UITableViewDataSource {
+extension TrendingInfoViewController: UITableViewDelegate, UITableViewDataSource {
+    
+//    func tableView(ddz
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
+        castList?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: <#Cell#>.identifier, for: indexPath) as! <#Cell#>
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TrendingInfoTableViewCell.id, for: indexPath) as? TrendingInfoTableViewCell
+        else {
+            return UITableViewCell()
+        }
+//        cell = castList?[indexPath.row]
+        
         
         return cell
     }
