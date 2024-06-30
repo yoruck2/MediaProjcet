@@ -91,7 +91,7 @@ class SearchMovieViewController: BaseViewController {
         }
     }
     
-    override func cnofigureView() {
+    override func configureView() {
         navigationItem.title = "영화 검색"
     }
     
