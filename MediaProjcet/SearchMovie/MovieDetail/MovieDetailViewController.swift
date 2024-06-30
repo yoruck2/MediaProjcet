@@ -102,7 +102,11 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: MovieDetailTableViewCell.id, for: indexPath) as! MovieDetailTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieDetailTableViewCell.id, 
+                                                       for: indexPath) as? MovieDetailTableViewCell
+        else {
+            return UITableViewCell()
+        }
         
         if indexPath.row == 0 {
             cell.titleLabel.text = "비슷한 영화"
@@ -134,13 +138,18 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
 }
 
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, 
+                        numberOfItemsInSection section: Int) -> Int {
         return posterImageList[collectionView.tag].count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieDetailCollectionViewCell.id,
-                                                      for: indexPath) as! MovieDetailCollectionViewCell
+    func collectionView(_ collectionView: UICollectionView, 
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieDetailCollectionViewCell.id,
+                                                            for: indexPath) as? MovieDetailCollectionViewCell
+        else {
+            return UICollectionViewCell()
+        }
         
         // TODO: 포스터 이미지가 없는 경우 어떻게 처리 할 것인가?
         // filePath가 없다면 셀생성을 하지 않기??
