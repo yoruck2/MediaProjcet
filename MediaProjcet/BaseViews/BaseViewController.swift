@@ -13,7 +13,7 @@ class BaseViewController: UIViewController {
         super.viewDidLoad()
         configureHierarchy()
         configureLayout()
-        cnofigureView()
+        configureView()
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -27,5 +27,5 @@ class BaseViewController: UIViewController {
     
     func configureHierarchy() {}
     func configureLayout() {}
-    func cnofigureView() {}
+    func configureView() {}
 }
