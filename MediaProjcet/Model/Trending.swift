@@ -20,14 +20,14 @@ struct Trending: Codable {
     }
     
     struct Result: Codable {
-        let backdropPath: String
+        let backdropPath: String?
         let id: Int
         let overview: String
         let posterPath: String
         let title: String
         let genreIDS: [Int]
         let releaseDate: String
-    //    let voteAverage: Double
+        let voteAverage: Double
         //    let originalLanguage: OriginalLanguage
         //    let popularity: Double
         //    let adult: Bool
@@ -42,6 +42,7 @@ struct Trending: Codable {
             case title
             case genreIDS = "genre_ids"
             case releaseDate = "release_date"
+            case voteAverage = "vote_average"
         }
     }
 }

@@ -10,9 +10,11 @@ import Alamofire
 
 enum TMDBRequest {
     case trending(type: TrendingType, language: Language)
+    case credits(movieId: Int, language: Language)
     case searchMovie(query: String, page: Int?)
     case movieSuggestion(type: SuggestionType, movieId: Int, page: Int)
     case movieImage(movieId: Int)
+    case movieGenre(language: Language)
     
     enum TrendingType: String {
         case TV = "tv"
@@ -46,6 +48,10 @@ enum TMDBRequest {
             return URL.make(with: baseURL + "movie/\(id)/\(type.rawValue)")
         case .movieImage(let id):
             return URL.make(with: baseURL + "movie/\(id)/images")
+        case .credits(let id, _):
+            return URL.make(with: baseURL + "movie/\(id)/credits")
+        case .movieGenre(_):
+            return URL.make(with: baseURL + "genre/movie/list")
         }
     }
     
@@ -53,17 +59,21 @@ enum TMDBRequest {
         return .get
     }
     
-    var parameter: Parameters {
+    var parameter: Parameters? {
         switch self {
         case .trending(_, let language):
             return ["language": language.rawValue]
         case .searchMovie(let query, let page):
             return ["query": query, 
-                    "page": page]
+                    "page": page as Any]
         case .movieSuggestion(_, _, let page):
             return ["page": page]
         case .movieImage:
             return ["include_image_language": ""]
+        case .credits(_, let language):
+            return ["language": language.rawValue]
+        case .movieGenre(language: let language):
+            return ["language": language.rawValue]
         }
     }
 }
