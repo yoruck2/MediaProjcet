@@ -17,6 +17,4 @@ extension URL {
 //    init(staticString: StaticString) {
 //        self.init(string: String(staticString))!
 //    }
-//    
-//
 }

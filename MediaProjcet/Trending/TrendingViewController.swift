@@ -13,7 +13,13 @@ import SnapKit
 class TrendingViewController: BaseViewController {
     
     let network = TMDBAPI.shared
-    var trendingList: [Trending.Result] = []
+    var trendingList: [Trending.Result] = [] {
+        didSet {
+            trendingTableView.reloadData()
+        }
+    }
+    var creditData: MovieCredits?
+    var movieGenreList: [Genre]?
     
     lazy var trendingTableView = UITableView().then {
         $0.delegate = self
@@ -27,9 +33,17 @@ class TrendingViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        network.request(api: .trending(type: .Movie, language: .korean), model: Trending.self) { [self] data, error in
+        network.request(api: .trending(type: .Movie, 
+                                       language: .korean),
+                        model: Trending.self) { [self] data, error in
             trendingList = data?.results ?? []
+            trendingTableView.reloadData()
+        } 
+        
+        network.request(api: .movieGenre(language: .korean), model: MovieGenre.self) { data,_ in
+            self.movieGenreList = data?.genres
         }
+ 
     }
     
     override func configureHierarchy() {
@@ -74,7 +88,7 @@ class TrendingViewController: BaseViewController {
 
 extension TrendingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        trendingList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -83,11 +97,33 @@ extension TrendingViewController: UITableViewDelegate, UITableViewDataSource {
         else {
             return UITableViewCell()
         }
+        network.request(api: .credits(movieId: trendingList[indexPath.row].id,
+                                      language: .korean),
+                        model: MovieCredits.self) { [self] data, _ in
+            creditData = data
+
+        }
+        movieGenreList?.forEach { genre in
+            if genre.id == trendingList[indexPath.row].genreIDS[0] {
+                cell.genreLabel.text = "#\(genre.name)"
+            }
+        }
         
-//        cell.cellData = trendingList[indexPath.row]
-        
+        cell.castData = creditData
+        cell.movieData = trendingList[indexPath.row]
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let nextVC = TrendingInfoViewController()
+        nextVC.castList = creditData?.cast
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
     
+}
+
+extension TrendingViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        
+    }
 }
