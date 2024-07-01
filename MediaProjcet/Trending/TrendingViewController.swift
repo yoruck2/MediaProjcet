@@ -120,6 +120,7 @@ extension TrendingViewController: UITableViewDelegate, UITableViewDataSource {
                                       language: .korean),
                         model: MovieCredits.self) { [self] data, _ in
             creditData = data
+            print(trendingList[indexPath.row].id)
             nextVC.castList = creditData?.cast
             nextVC.movieData = trendingList[indexPath.row]
             navigationController?.pushViewController(nextVC, animated: true)

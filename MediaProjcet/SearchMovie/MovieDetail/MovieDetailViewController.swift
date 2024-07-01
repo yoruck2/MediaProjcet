@@ -75,7 +75,6 @@ class MovieDetailViewController: BaseViewController {
             }
         }
         group.notify(queue: .main) { [self] in
-            
             self.suggestionMovieTableView.reloadData()
         }
     }

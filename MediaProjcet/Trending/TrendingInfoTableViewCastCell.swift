@@ -23,7 +23,7 @@ class TrendingInfoTableViewCastCell: BaseTableViewCell {
     }
     
     let nameLabel = UILabel()
-    
+
     
     let characterNameLabel = UILabel().then {
         $0.textColor = .lightGray

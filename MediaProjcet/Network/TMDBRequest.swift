@@ -15,6 +15,7 @@ enum TMDBRequest {
     case movieSuggestion(type: SuggestionType, movieId: Int, page: Int)
     case movieImage(movieId: Int)
     case movieGenre(language: Language)
+    case movieVideo(movieId: Int, language: Language)
     
     enum TrendingType: String {
         case TV = "tv"
@@ -50,8 +51,10 @@ enum TMDBRequest {
             return URL.make(with: baseURL + "movie/\(id)/images")
         case .credits(let id, _):
             return URL.make(with: baseURL + "movie/\(id)/credits")
-        case .movieGenre(_):
+        case .movieGenre:
             return URL.make(with: baseURL + "genre/movie/list")
+        case .movieVideo(let id, _):
+            return URL.make(with: baseURL + "movie/\(id)/videos")
         }
     }
     
@@ -72,7 +75,9 @@ enum TMDBRequest {
             return ["include_image_language": ""]
         case .credits(_, let language):
             return ["language": language.rawValue]
-        case .movieGenre(language: let language):
+        case .movieGenre(let language):
+            return ["language": language.rawValue]
+        case .movieVideo(_, let language):
             return ["language": language.rawValue]
         }
     }

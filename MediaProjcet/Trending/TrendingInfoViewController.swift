@@ -19,7 +19,18 @@ class TrendingInfoViewController: BaseViewController {
         }
     }
     
-    let backdropImageView = UIImageView()
+    lazy var backdropImageView = UIImageView().then {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                          action: #selector(backdropImageViewTapped))
+        $0.addGestureRecognizer(tapGestureRecognizer)
+        $0.isUserInteractionEnabled = true
+    }
+    @objc
+    func backdropImageViewTapped() {
+        let nextVC = TrendingMovieVideoViewController()
+        nextVC.movieID = movieData?.id ?? 0
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
     let shadowView = BaseView().then {
         $0.layer.shadowOpacity = 1
         $0.layer.shadowRadius = 3
