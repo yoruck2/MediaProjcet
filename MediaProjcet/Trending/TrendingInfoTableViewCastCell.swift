@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Then
 
-class TrendingInfoTableViewCell: BaseTableViewCell {
+class TrendingInfoTableViewCastCell: BaseTableViewCell {
     
     var castData: MovieCredits.Result? {
         didSet {

@@ -115,8 +115,6 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
         } else if indexPath.row == 2 {
             cell.titleLabel.text = "포스터"
         }
-        // TODO: selectionStyle: 만약 다른 뷰들도 마찬가지라면 base로 옮기기
-//        cell.selectionStyle = .none
         
         if posterImageList[indexPath.row].isEmpty && indexPath.row != 2 {
             cell.emptyLabel.isHidden = false
