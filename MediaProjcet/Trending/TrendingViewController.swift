@@ -116,10 +116,15 @@ extension TrendingViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nextVC = TrendingInfoViewController()
-        nextVC.castList = creditData?.cast
-        navigationController?.pushViewController(nextVC, animated: true)
+        network.request(api: .credits(movieId: trendingList[indexPath.row].id,
+                                      language: .korean),
+                        model: MovieCredits.self) { [self] data, _ in
+            creditData = data
+            nextVC.castList = creditData?.cast
+            nextVC.movieData = trendingList[indexPath.row]
+            navigationController?.pushViewController(nextVC, animated: true)
+        }
     }
-    
 }
 
 extension TrendingViewController: UITableViewDataSourcePrefetching {
