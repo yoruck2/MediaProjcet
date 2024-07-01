@@ -16,7 +16,7 @@ class TrendingMovieVideoViewController: BaseViewController {
     let network = TMDBAPI.shared
     var videoData: [Video.Result] = [] {
         didSet {
-            asdf()
+            configureWebView()
         }
     }
     var movieID: Int = 0
@@ -41,9 +41,9 @@ class TrendingMovieVideoViewController: BaseViewController {
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
-    func asdf() {
-        print(videoData)
-        let url = URL.make(with: "https://www.youtube.com/watch?v=\(videoData[0].key)")
+    func configureWebView() {
+        let randomVideoRange = Int.random(in: 0...videoData.count - 1)
+        let url = URL.make(with: "https://www.youtube.com/watch?v=\(videoData[randomVideoRange].key)")
         let request = URLRequest(url: url)
         webView.load(request)
     }
