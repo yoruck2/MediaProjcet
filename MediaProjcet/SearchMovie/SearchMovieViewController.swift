@@ -11,7 +11,7 @@ import SnapKit
 import Kingfisher
 
 
-class SearchMovieViewController: BaseViewController {
+final class SearchMovieViewController: BaseViewController {
     
     let network = TMDBAPI.shared
     

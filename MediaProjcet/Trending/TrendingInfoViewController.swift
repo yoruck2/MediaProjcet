@@ -10,7 +10,7 @@ import SnapKit
 import Then
 import Kingfisher
 
-class TrendingInfoViewController: BaseViewController {
+final class TrendingInfoViewController: BaseViewController {
     
     var movieData: Trending.Result?
     var castList: [MovieCredits.Result]? {

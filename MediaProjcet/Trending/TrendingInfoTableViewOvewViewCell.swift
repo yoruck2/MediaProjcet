@@ -13,7 +13,7 @@ protocol ReadmoreButtonDelegate {
     func toggleReadme()
 }
 
-class TrendingInfoTableViewOverViewCell: BaseTableViewCell {
+final class TrendingInfoTableViewOverViewCell: BaseTableViewCell {
     
     var delegate: ReadmoreButtonDelegate?
     

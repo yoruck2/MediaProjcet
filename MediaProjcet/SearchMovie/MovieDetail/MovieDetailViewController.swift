@@ -11,7 +11,7 @@ import Kingfisher
 import SnapKit
 import Then
 
-class MovieDetailViewController: BaseViewController {
+final class MovieDetailViewController: BaseViewController {
     
     let network = TMDBAPI.shared
     var similarPage = 1

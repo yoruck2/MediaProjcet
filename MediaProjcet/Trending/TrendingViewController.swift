@@ -10,18 +10,18 @@ import UIKit
 import Alamofire
 import SnapKit
 
-class TrendingViewController: BaseViewController {
+final class TrendingViewController: BaseViewController {
     
     let network = TMDBAPI.shared
-    var trendingList: [Trending.Result] = [] {
+    private var trendingList: [Trending.Result] = [] {
         didSet {
             trendingTableView.reloadData()
         }
     }
-    var creditData: MovieCredits?
-    var movieGenreList: [Genre]?
+    private var creditData: MovieCredits?
+    private var movieGenreList: [Genre]?
     
-    lazy var trendingTableView = UITableView().then {
+    private lazy var trendingTableView = UITableView().then {
         $0.delegate = self
         $0.dataSource = self
 //        $0.prefetchDataSource = self
@@ -46,7 +46,7 @@ class TrendingViewController: BaseViewController {
  
     }
     
-    override func configureHierarchy() {
+    override  func configureHierarchy() {
         view.addSubview(trendingTableView)
     }
     override func configureLayout() {
@@ -58,7 +58,7 @@ class TrendingViewController: BaseViewController {
         setUpNavigationBar()
     }
     
-    func setUpNavigationBar() {
+    private func setUpNavigationBar() {
         let menu = UIBarButtonItem(
             image: UIImage(systemName: "list.bullet"),
             style: .plain,
@@ -81,7 +81,7 @@ class TrendingViewController: BaseViewController {
     }
     
     @objc
-    func searchItemTapped() {
+    private func searchItemTapped() {
         self.present(SearchMovieViewController(), animated: true)
     }
 }

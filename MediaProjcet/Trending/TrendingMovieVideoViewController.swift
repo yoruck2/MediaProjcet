@@ -11,7 +11,7 @@ import SnapKit
 import Then
 import WebKit
 
-class TrendingMovieVideoViewController: BaseViewController {
+final class TrendingMovieVideoViewController: BaseViewController {
     
     let network = TMDBAPI.shared
     var videoData: [Video.Result] = [] {

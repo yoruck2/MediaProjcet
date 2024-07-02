@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 import Then
 
-class MovieDetailTableViewCell: BaseTableViewCell {
+final class MovieDetailTableViewCell: BaseTableViewCell {
     
     let titleLabel = UILabel().then {
         $0.font = .boldSystemFont(ofSize: 18)

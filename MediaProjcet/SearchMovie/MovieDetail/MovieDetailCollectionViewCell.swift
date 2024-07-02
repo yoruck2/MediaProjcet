@@ -9,7 +9,7 @@ import UIKit
 import Then
 import SnapKit
 
-class MovieDetailCollectionViewCell: BaseCollectionViewCell {
+final class MovieDetailCollectionViewCell: BaseCollectionViewCell {
     
     var posterImageView = UIImageView().then {
         $0.backgroundColor = .gray

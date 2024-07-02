@@ -11,7 +11,7 @@ import Kingfisher
 import SnapKit
 import Then
 
-class TrendingTableViewCell: BaseTableViewCell {
+final class TrendingTableViewCell: BaseTableViewCell {
     
     var movieData: Trending.Result? {
         didSet {
@@ -20,14 +20,14 @@ class TrendingTableViewCell: BaseTableViewCell {
     }
     var castData: MovieCredits?
     
-    lazy var dateLabel = UILabel().then {
+    private lazy var dateLabel = UILabel().then {
         $0.textColor = .lightGray
     }
-    lazy var genreLabel = UILabel().then {
+    private lazy var genreLabel = UILabel().then {
         $0.text = "#장르"
         $0.font = Font.bold20
     }
-    lazy var trendView = TrendView()
+    private lazy var trendView = TrendView()
     
     override func configureHierarchy() {
         contentView.addSubview(dateLabel)
