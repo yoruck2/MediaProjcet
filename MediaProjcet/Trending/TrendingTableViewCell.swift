@@ -23,7 +23,7 @@ final class TrendingTableViewCell: BaseTableViewCell {
     private lazy var dateLabel = UILabel().then {
         $0.textColor = .lightGray
     }
-    private lazy var genreLabel = UILabel().then {
+    lazy var genreLabel = UILabel().then {
         $0.text = "#장르"
         $0.font = Font.bold20
     }
